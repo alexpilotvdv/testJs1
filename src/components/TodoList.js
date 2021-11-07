@@ -1,21 +1,38 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from "react-native";
 
-const TodoList = (props) =>{
-console.log(props)
-    return ( 
-    <View style={styles.container}>
-        {props.todos.map((todo)=>
-        <TouchableOpacity key={todo.id} onPress={()=>props.toggleTodo(todo.id)}>
-            <Text style={{fontSize:24, 
-            textDecorationLine: todo.completed?'line-through':'none'}}>
-                {todo.text}
-            </Text>
-        </TouchableOpacity>
-        )}
-    </View>
+
+
+const TodoList = (props) => {
+    
+    const renderItems = ({item}) => {
+        //console.log(item.text)
+        return (
+            <TouchableOpacity key={item.id} onPress={() => {
+                console.log('togggle id=',item.id,' parametr',item.completed)
+                props.toggleTodo(item.id,item.completed)}}>
+                <Text style={{
+                    fontSize: 24,
+                    textDecorationLine: (item.completed===1) ? 'line-through' : 'none'
+                }}>
+                    {item.text}
+                </Text>
+            </TouchableOpacity>
+        )
+    }
+
+    return (
+        <View style={styles.container}>
+            <FlatList
+                data={props.todos}
+                renderItem={renderItems}
+                keyExtractor={(item) => item.id}
+            />
+        </View>
+
+
     )
-   
+
 }
 
 
@@ -27,4 +44,4 @@ const styles = StyleSheet.create(
         }
     }
 )
- export default TodoList
+export default TodoList

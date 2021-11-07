@@ -9,9 +9,17 @@ class AddToDo extends Component {
     }
     addtodo = (text) => {
         //console.log(this.props)
-        this.props.dispatch({ type: 'ADD_TODO', text: text })
+        this.props.dispatch({ type: 'ADD_TODO', text: text, func:this.afterLoad })
         this.setState({text:''})
 
+    }
+    componentDidMount=()=>{
+        this.props.dispatch({type:'LOAD',func:this.afterLoad})
+    }
+    //следующая функция должна вызваться после того, как сяитаются данные
+    afterLoad = ()=>{
+        console.log('func afterload')
+        this.props.dispatch({type:'AFTERLOAD'})
     }
     render() {
         return (
