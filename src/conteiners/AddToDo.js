@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
+import { createThunkLoadAll,} from '../reducers/todos'
 
 class AddToDo extends Component {
     state = {
@@ -9,24 +10,26 @@ class AddToDo extends Component {
     }
     addtodo = (text) => {
         //console.log(this.props)
-        this.props.dispatch({ type: 'ADD_TODO', text: text, func:this.afterLoad })
-        this.setState({text:''})
+        this.props.dispatch({ type: 'ADD_TODO', text: text, func: this.afterLoad })
+        this.setState({ text: '' })
 
     }
-    componentDidMount=()=>{
-        this.props.dispatch({type:'LOAD',func:this.afterLoad})
+    componentDidMount = () => {
+        // this.props.dispatch({ type: 'LOAD', func: this.afterLoad })
+        this.props.dispatch(createThunkLoadAll())
+        createThunkLoadAll()
     }
     //следующая функция должна вызваться после того, как сяитаются данные
-    afterLoad = ()=>{
+    afterLoad = () => {
         console.log('func afterload')
-        this.props.dispatch({type:'AFTERLOAD'})
+        this.props.dispatch({ type: 'AFTERLOAD' })
     }
     render() {
         return (
             <View style={{ flexDirection: 'row' }}>
                 <TextInput
                     value={this.state.text}
-                    onChangeText={(text) => this.setState({text:text})}
+                    onChangeText={(text) => this.setState({ text: text })}
                     placeholder='test'
                     style={{
                         borderWidth: 1, borderColor: '#f2f2e1', backgroundColor: '#eaeaea',
@@ -45,6 +48,12 @@ class AddToDo extends Component {
         )
     }
 
+}
+
+const mapDispatch = (dispatch) => {
+    return {
+        createThunkLoadAll: dispatch(createThunkLoadAll())
+    }
 }
 export default connect()(AddToDo)
 const styles = StyleSheet.create(

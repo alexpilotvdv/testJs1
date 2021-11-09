@@ -48,8 +48,23 @@ class Mydb {
             ) // end executeSQL
         }) // end transaction
     }
+    loadDataPromis = () => {
+        return new Promise((resolve, reject) => {
+            this.db.transaction(tx => {
+                tx.executeSql('SELECT * FROM items', null, // passing sql query and parameters:null
+                    // success callback which sends two things Transaction object and ResultSet Object
+                    (txObj, { rows: { _array } }) => {
+                        this.state = [..._array].reverse()
+                        resolve()
+                    },
+                    // failure callback which sends two things Transaction object and Error
+                    (txObj, error) => console.log('Error ', error)
+                ) // end executeSQL
+            }) // end transaction
+        })
 
-   
+    }
+
 
 
     addTest = (par) => {
@@ -62,32 +77,32 @@ class Mydb {
         })
 
     }
-    
-    editRecordCompleted=(id,par)=>{
+
+    editRecordCompleted = (id, par) => {
         let newCompl = 0
-        newCompl = (par===0)?1:0
+        newCompl = (par === 0) ? 1 : 0
         console.log('editrec')
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
             this.db.transaction(tx => {
                 tx.executeSql('UPDATE items SET completed = ? WHERE id = ?', [newCompl, id],
-                  (txObj, resultSet) => {
-                    if (resultSet.rowsAffected > 0) {
-                      resolve(resultSet)
-                    } else {
-                        reject('err')
-                    }
-                  })
-              })
-            
+                    (txObj, resultSet) => {
+                        if (resultSet.rowsAffected > 0) {
+                            resolve(resultSet)
+                        } else {
+                            reject('err')
+                        }
+                    })
+            })
+
         })
-        
+
     }
 
-    deleteAllRec=()=>{
+    deleteAllRec = () => {
         this.db.transaction(tx => {
             tx.executeSql('DELETE FROM items', null,
-                (txObj, resultSet) => console.log('all deleted',resultSet),
-                (txObj, error) => console.log('error deleted',error))
+                (txObj, resultSet) => console.log('all deleted', resultSet),
+                (txObj, error) => console.log('error deleted', error))
         })
     }
 }
@@ -98,7 +113,24 @@ let db = new Mydb()
 //console.log('all',db.returnAllRec())
 let nextid = 2
 //db.asyncReturnAll().then(result=>console.log('ressssss',result))
+export const createThunkLoadAll = () => {
+    return (dispatch) => {
+        db.loadDataPromis().then(
+            resolve => dispatch({ type: 'AFTERLOAD' })
+        )
+    }
+}
 
+export const createThunkEditCompl = (id,par)=>{
+    return (dispatch)=>{
+        db.editRecordCompleted(id, par).then(
+            result =>  (db.loadDataPromis().then(
+                resolve => dispatch({ type: 'AFTERLOAD' })
+            )),
+            error => { console.log(error) }
+        )
+    }
+}
 
 //реализовать загрузку с базы
 const todos = (state = init2, action) => {
@@ -118,7 +150,7 @@ const todos = (state = init2, action) => {
                 db.addTest([action.text, 0]).then(
                     result => {
                         //если данные записались в базу, вызовем загрузку из базы
-                        console.log('record ok',result)
+                        console.log('record ok', result)
                         db.loadData(action.func)
                     },
                     error => {
@@ -132,12 +164,12 @@ const todos = (state = init2, action) => {
             } else return state
 
         case 'TOGGLE_TODO':
-            
-         db.editRecordCompleted(action.id,action.current).then(
-             //надо будет сюда передать функцию, которая вызовет новый диспатч
-             result=> db.loadData(action.func),
-             error=>{console.log(error)}
-         )
+
+            db.editRecordCompleted(action.id, action.current).then(
+                //надо будет сюда передать функцию, которая вызовет новый диспатч
+                result => db.loadData(action.func),
+                error => { console.log(error) }
+            )
             return [...db.state]
         default: return state
 

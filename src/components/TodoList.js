@@ -9,7 +9,7 @@ const TodoList = (props) => {
         //console.log(item.text)
         return (
             <TouchableOpacity key={item.id} onPress={() => {
-                console.log('togggle id=',item.id,' parametr',item.completed)
+               // console.log('togggle id=',item.id,' parametr',item.completed)
                 props.toggleTodo(item.id,item.completed)}}>
                 <Text style={{
                     fontSize: 24,

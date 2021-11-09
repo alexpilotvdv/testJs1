@@ -18,10 +18,22 @@
     "react-native": "^0.66.2",
     "react-native-web": "0.17.1",
     "react-redux": "^7.2.6",
-    "redux": "^4.1.2"
+    "redux": "^4.1.2",
+    "redux-thunk": "^2.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
   },
-  "private": true
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexpilotvdv/testJs1.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexpilotvdv/testJs1/issues"
+  },
+  "homepage": "https://github.com/alexpilotvdv/testJs1#readme",
+  "description": ""
 }

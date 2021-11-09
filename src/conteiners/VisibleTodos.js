@@ -1,12 +1,12 @@
 import { connect } from "react-redux";
 import TodoList from "../components/TodoList";
+import {createThunkEditCompl} from '../reducers/todos'
 
 const mapStateToProps=(state)=>({
    todos: state.todos 
 })
 const mapDispatchToProps = (dispatch)=>({
-    toggleTodo: (id,current)=>dispatch({type:'TOGGLE_TODO',id:id,
-    current:current,func:()=>dispatch({type:'AFTERLOAD'})}),
+    toggleTodo: (id,current)=>dispatch(createThunkEditCompl(id,current)),
    // afterLoad: ()=>dispatch({type:'AFTERLOAD'})
 })
 
